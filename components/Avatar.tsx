@@ -18,6 +18,11 @@ const Container = styled.div<Props>`
   align-items: center;
   font-size: 1.5em;
   color: white;
+  cursor: pointer;
+
+  :hover {
+    opacity: 0.8;
+  }
 `
 const Image = styled.img`
   width: 50px;
