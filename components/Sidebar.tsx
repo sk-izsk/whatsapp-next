@@ -1,15 +1,21 @@
 import * as EmailValidator from 'email-validator'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { BiMessageDetail } from 'react-icons/bi'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import styled from 'styled-components'
+import { auth } from '../firebase'
 import { avatarConfig } from '../utils'
 import { Avatar } from './Avatar'
 import { Button } from './Button'
 import { Search } from './Search'
 
-interface Props {}
+interface Props {
+  name?: string
+}
 
-const Sidebar: React.FC<Props> = () => {
+const Sidebar: React.FC<Props> = ({ name }) => {
+  const [user] = useAuthState(auth)
+  console.log('user: ', user)
   const createChat = () => {
     const input = prompt('Please enter email of a person to whom you wish to chat.')
     if (!input) return null
@@ -20,7 +26,7 @@ const Sidebar: React.FC<Props> = () => {
   return (
     <Container>
       <Header>
-        <Avatar name='Zeeshan' />
+        <Avatar name={user.displayName || '-'} source={user.photoURL} />
         <div>
           <MessageIcon {...avatarConfig} />
           <MoreIcon {...avatarConfig} />

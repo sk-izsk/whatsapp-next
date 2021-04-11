@@ -1,12 +1,13 @@
+import firebase from 'firebase'
 import type { AppProps } from 'next/app'
 import Router from 'next/router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import { Loading } from '../components'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 import '../styles/globals.css'
 import Login from './login'
 
@@ -24,13 +25,25 @@ interface Props {}
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [user, loading] = useAuthState(auth)
+
+  useEffect(() => {
+    if (user) {
+      db.collection('user').doc(user.uid).set(
+        {
+          email: user.email,
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+          photo: user.photoURL,
+        },
+        {
+          merge: true,
+        },
+      )
+    }
+  }, [user])
+
   if (loading) return <Loading />
   if (!user) return <Login />
-  return (
-    <Login>
-      <Component {...pageProps} />
-    </Login>
-  )
+  return <Component {...pageProps} />
 }
 
 export default MyApp
