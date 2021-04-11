@@ -1,13 +1,22 @@
+import * as EmailValidator from 'email-validator'
 import { BiMessageDetail } from 'react-icons/bi'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import styled from 'styled-components'
 import { avatarConfig } from '../utils'
 import { Avatar } from './Avatar'
+import { Button } from './Button'
 import { Search } from './Search'
 
 interface Props {}
 
 const Sidebar: React.FC<Props> = () => {
+  const createChat = () => {
+    const input = prompt('Please enter email of a person to whom you wish to chat.')
+    if (!input) return null
+    if (EmailValidator.validate(input)) {
+      // will do
+    }
+  }
   return (
     <Container>
       <Header>
@@ -18,7 +27,7 @@ const Sidebar: React.FC<Props> = () => {
         </div>
       </Header>
       <Search />
-      <SideBarButton>START A NEW CHAT</SideBarButton>
+      <Button onClick={createChat}>START A NEW CHAT</Button>
     </Container>
   )
 }
@@ -39,15 +48,6 @@ const MessageIcon = styled(BiMessageDetail)`
   cursor: pointer;
 `
 
-const SideBarButton = styled.button`
-  width: 100%;
-  border: 1px solid whitesmoke;
-  outline: none;
-  padding: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: #635e5d;
-`
 const MoreIcon = styled(BsThreeDotsVertical)`
   cursor: pointer;
 `
