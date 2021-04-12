@@ -1,28 +1,37 @@
 import * as EmailValidator from 'email-validator'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { useCollection } from 'react-firebase-hooks/firestore'
 import { BiMessageDetail } from 'react-icons/bi'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import styled from 'styled-components'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 import { avatarConfig } from '../utils'
 import { Avatar } from './Avatar'
 import { Button } from './Button'
 import { Search } from './Search'
 
-interface Props {
-  name?: string
-}
+interface Props {}
 
-const Sidebar: React.FC<Props> = ({ name }) => {
+const Sidebar: React.FC<Props> = () => {
   const [user] = useAuthState(auth)
-  console.log('user: ', user)
+  const userChatRef = db.collection('chats').where('users', 'array-contains', user.email)
+  const [chatsSnapshot] = useCollection(userChatRef)
+
   const createChat = () => {
-    const input = prompt('Please enter email of a person to whom you wish to chat.')
+    const input: string = prompt('Please enter email of a person to whom you wish to chat.')
     if (!input) return null
-    if (EmailValidator.validate(input)) {
-      // will do
+    if (EmailValidator.validate(input) && !getExitingChat(input) && user.email !== input) {
+      db.collection('chats').add({
+        users: [user.email, input],
+      })
     }
   }
+
+  const getExitingChat = (email: string) =>
+    !!chatsSnapshot?.docs.find(
+      (chat) => chat.data().users.find((user) => user === email)?.length > 0,
+    )
+
   return (
     <Container>
       <Header>
