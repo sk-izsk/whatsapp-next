@@ -1,12 +1,18 @@
 import styled from 'styled-components'
+import { auth } from '../firebase'
 interface Props {
   source?: string
   name: string
 }
 
-const Avatar: React.FC<Props> = ({ source, name }) => (
-  <Container>{source ? <Image src={source} alt={source} /> : name[0]}</Container>
-)
+const Avatar: React.FC<Props> = ({ source, name }) => {
+  const signOut = () => auth.signOut().catch(alert)
+  return (
+    <Container onClick={signOut}>
+      {source ? <Image src={source} alt={source} /> : name[0]}
+    </Container>
+  )
+}
 
 const Container = styled.div<Props>`
   display: flex;
