@@ -27,7 +27,7 @@ const Sidebar: React.FC<Props> = () => {
     }
   }
 
-  const getExitingChat = (email: string) =>
+  const getExitingChat = (email: string): boolean =>
     !!chatsSnapshot?.docs.find(
       (chat) => chat.data().users.find((user) => user === email)?.length > 0,
     )
